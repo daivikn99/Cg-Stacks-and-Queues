@@ -1,0 +1,449 @@
+4.1 Source Code 
+#include<stdio.h> 
+#include<process.h> 
+#include<stdlib.h> 
+#include<glut.h> #include<gl/gl.h> 
+int i, j, k;
+ int a[10] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+ int b[10] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+ int top = -1, push = 2, pop = 2, front = -1, rear = -1, insertq = 2, deleteq = 2, in = 0, in1 = 0, f1 = -1, r1 = -1, hl = 1; 
+void stack();
+ void queue();
+ void drawBitmapText(char * string, float x, float y, float z)  
+  {
+   char * c;
+   glRasterPos3f(x, y, z);
+   for (c = string;* c != '.'; c++) 
+{ 
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, * c); 
+  }
+ }
+ void drawBitmapTexth(char * string, float x, float y, float z)  
+  {
+   char * c; 
+  glRasterPos3f(x, y, z); 
+  for (c = string;* c != '.'; c++)  
+  { 
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, * c); 
+  } 
+}
+ void drawBitmapTextv(int t, float x, float y, float  z)
+{
+   char buffer[20], * c;
+   glRasterPos3f(x, y, z);
+   _itoa_s(t, buffer, 10); 
+  for (c = buffer;* c != '\0'; c++) 
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, * c); 
+}
+ void init()  
+{
+   glClearColor(1.0, 1.0, 1.0,1.0); 
+  glMatrixMode(GL_PROJECTION); 
+  glLoadIdentity(); 
+  gluOrtho2D(0.0, 499.0, 0.0, 499.0); 
+  glutPostRedisplay(); 
+}
+ void drawpointer()  
+{
+   glBegin(GL_LINES); 
+  glVertex2f(190.0, 65.0 + (40 * top));
+   glVertex2f(180.0, 60.0 + (40 * top));
+   glEnd();
+   glBegin(GL_LINES); 
+   glVertex2f(180.0, 60.0 + (40 * top));
+   glVertex2f(190.0, 55.0 + (40 * top)); 
+   glEnd();
+glBegin(GL_LINES);
+glVertex2f(180.0, 60.0 + (40 * top));
+   glVertex2f(225.0, 60.0 + (40 * top));
+   glEnd(); 
+  drawBitmapText("TOP.", 200, 63.0 + (40 * top), 0); 
+}
+voiddrawpointerf()  
+{
+   glBegin(GL_LINES); 
+  glVertex2f(50.0 + (40 * front), 190);
+   glVertex2f(45.0 + (40 * front), 180);
+   glEnd();  
+ glBegin(GL_LINES);
+ glVertex2f(50.0 + (40 * front), 190);
+   glVertex2f(55.0 + (40 * front), 180);
+   glEnd();
+  glBegin(GL_LINES); 
+  glVertex2f(50.0 + (40 * front), 190);
+   glVertex2f(50.0 + (40 * front), 165);  
+ glEnd(); 
+  if (front == -1)
+     drawBitmapText("FRONT.", 45.0 + (40 * front), 155,0); 
+  else 
+ drawBitmapText("FRONT.", 20.0 + (40 * front), 170, 0); 
+} 
+void drawpointerr() 
+{
+ glBegin(GL_LINES);   
+glVertex2f(70.0 + (40 * rear), 190);
+   glVertex2f(65.0 + (40 * rear), 180);
+   glEnd();
+ glBegin(GL_LINES);
+   glVertex2f(70.0 + (40 * rear), 190);
+   glVertex2f(75.0 + (40 * rear), 180); 
+  glEnd(); 
+  glBegin(GL_LINES); 
+  glVertex2f(70.0 + (40 * rear), 190);
+   glVertex2f(70.0 + (40 * rear), 165);
+   glEnd();
+ drawBitmapText("REAR.", 75.0 + (40 * rear), 170, 0); 
+}
+void drawstack()  
+{
+   if (hl == 0)
+ {
+     for (i = 1; i < 11;i++)  
+    {
+       glColor3f(0.0, 0.0,1.0); 
+      glBegin(GL_LINE_LOOP);
+       glVertex2f(100.0, 40.0 * i);
+       glVertex2f(100.0, 40.0 * i + 40);
+       glVertex2f(150.0, 40.0 * i + 40);
+       glVertex2f(150.0, 40.0 * i);
+glEnd(); 
+    } 
+  }
+ else if (hl == 1) 
+{
+     for (i = 1; i < 11;i++)  
+    {
+       if (top == -1) 
+{
+         glColor3f(0.0, 0.0, 1.0);
+         glBegin(GL_LINE_LOOP);
+         glVertex2f(100.0, 40.0 * i);
+         glVertex2f(100.0, 40.0 * i + 40);
+         glVertex2f(150.0, 40.0 * i + 40); 
+        glVertex2f(150.0, 40.0 * i);
+         glEnd();       
+}
+ else { 
+        if ((top + 1) == i)  
+        { 
+          if (top != -1)  
+          {
+glColor3f(0.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(100.0, 40.0 * (top + 1));
+glVertex2f(100.0, 40.0 * (top + 1) + 40);
+glVertex2f(150.0, 40.0 * (top + 1) + 40);
+glVertex2f(150.0, 40.0 * (top + 1)); 
+glEnd();
+glColor3f(0.0, 0.0, 1.0); 
+            glBegin(GL_LINE_LOOP); 
+            glVertex2f(100.0, 40.0 * i);
+             glVertex2f(100.0, 40.0 * i + 40);
+            glVertex2f(150.0, 40.0 * i + 40);  
+           glVertex2f(150.0, 40.0 * i);   
+          glEnd(); 
+          } 
+        }
+ else {
+glColor3f(0.0, 0.0, 1.0); 
+          glBegin(GL_LINE_LOOP);
+           glVertex2f(100.0, 40.0 * i);
+    glVertex2f(100.0, 40.0 * i+40);
+glVertex2f(150.0, 40.0 * i + 40); 
+          glVertex2f(150.0, 40.0 * i);
+           glEnd(); 
+        } 
+      } 
+    } 
+  } 
+} 
+void drawqueue()  
+{ 
+  if (hl == 0) 
+{
+    for (k = 1; k < 11; k++)  
+    {
+glColor3f(1.0, 0.0, 0.0); 
+glBegin(GL_LINE_LOOP);   
+    glVertex2f(40.0 * k, 200.0); 
+      glVertex2f(40.0 * k + 40, 200.0); 
+      glVertex2f(40.0 * k + 40, 250.0); 
+      glVertex2f(40.0 * k, 250.0);
+       glEnd(); 
+    } 
+  }
+ else if (hl == 1) 
+{
+    for (k = 1; k < 11; k++)  
+    { 
+      if (front == -1 && rear == -1)  
+      {
+ glColor3f(1.0, 0.0, 0.0); 
+        glBegin(GL_LINE_LOOP);
+         glVertex2f(40.0 * k, 200.0); 
+        glVertex2f(40.0 * k + 40, 200.0);
+         glVertex2f(40.0 * k + 40, 250.0); 
+        glVertex2f(40.0 * k, 250.0);  
+       glEnd();
+       }
+ else 
+{ 
+        if ((front + 1) == k && f1 != front)
+ {
+           f1 = front;
+   if (front != -1) 
+{
+glColor3f(0.5, 0.0, 1.0);
+             glBegin(GL_POLYGON); 
+           glVertex2f(40.0 * (front + 1), 200.0);
+glVertex2f(40.0 * (front + 1)+ 40, 200.0);
+glVertex2f(40.0 * (front + 1)+ 40, 250.0);
+             glVertex2f(40.0 * (front + 1), 250.0);
+             glEnd();
+glColor3f(1.0, 0.0, 0.0);
+             glBegin(GL_LINE_LOOP);
+             glVertex2f(40.0 * k, 200.0);
+             glVertex2f(40.0 * k + 40, 200.0);
+             glVertex2f(40.0 * k + 40, 250.0);
+             glVertex2f(40.0 * k, 250.0);  
+           glEnd();
+}
+ else {
+ glColor3f(1.0, 0.0, 0.0);      
+       glBegin(GL_LINE_LOOP);    
+         glVertex2f(40.0 * k, 200.0);    
+         glVertex2f(40.0 * k + 40, 200.0);  
+           glVertex2f(40.0 * k + 40, 250.0);  
+           glVertex2f(40.0 * k, 250.0);     
+        glEnd(); 
+          } 
+        } else if ((rear + 1) == k && r1 != rear) 
+{
+   r1 = rear;
+   if (rear != -1)
+{
+glColor3f(0.5, 0.0, 1.0);      
+       glBegin(GL_POLYGON);    
+         glVertex2f(40.0 * (rear + 1), 200.0);   
+          glVertex2f(40.0 * (rear + 1) + 40, 200.0);   
+          glVertex2f(40.0 * (rear + 1) + 40, 250.0);  
+           glVertex2f(40.0 * (rear + 1), 250.0);    
+         glEnd();
+glColor3f(1.0, 0.0, 0.0);        
+     glBegin(GL_LINE_LOOP);        
+    glVertex2f(40.0 * k, 200.0);   
+          glVertex2f(40.0 * k + 40, 200.0);      
+       glVertex2f(40.0 * k + 40, 250.0);        
+     glVertex2f(40.0 * k, 250.0);
+glEnd();  
+}
+ else {  
+glColor3f(1.0, 0.0, 0.0); 
+            glBegin(GL_LINE_LOOP); 
+            glVertex2f(40.0 * k, 200.0);  
+           glVertex2f(40.0 * k + 40, 200.0); 
+            glVertex2f(40.0 * k + 40, 250.0); 
+            glVertex2f(40.0 * k, 250.0);
+glEnd(); 
+          } 
+      }
+ else {
+glColor3f(1.0, 0.0, 0.0);  
+         glBegin(GL_LINE_LOOP); 
+          glVertex2f(40.0 * k, 200.0); 
+          glVertex2f(40.0 * k + 40, 200.0);
+           glVertex2f(40.0 * k + 40, 250.0); 
+          glVertex2f(40.0 * k, 250.0);   
+        glEnd(); 
+        } 
+      } 
+    } 
+  } } 
+void display(void){
+glClearColor(0.0,0.0, 0.0, 1.0); 
+glClear(GL_COLOR_BUFFER_BIT); 
+  if (j == 1) 
+{
+     stack();   
+}
+ else if (j == 2)
+ {
+     queue();   
+}
+ else {
+glColor3f(1.0, 0.0, 0.0); 
+    drawBitmapTexth("Wrong choice.", 200, 250, 0); 
+  }
+glFlush(); 
+}
+void pushelement()  
+{
+ if (top == 9)    {
+     push = 0; 
+  }
+ else 
+   {
+   printf("Enter the data to be pushed into the stack\n"); 
+    scanf_s("%d", & a[++top]); 
+    push = 1; 
+  }
+ }
+void popelement()  
+{
+   if (top == -1)     pop = 0;
+   else {     a[top--] = -1;     pop = 1; 
+  } 
+}
+void insertelement()  
+{
+   if (rear == 9) 
+   {
+   insertq = 0;
+   }
+ else 
+{
+printf("Enter the data to be inserted into the queue\n");  
+   scanf_s("%d", & b[++rear]);
+ insertq = 1; 
+  } 
+}
+void deleteelement()  
+{
+  if (front == rear)     deleteq = 0;
+   else
+ {
+   b[++front] = -1;     deleteq = 1; 
+  }
+ } 
+void keys(unsigned char key, int w, int h)  
+{
+  if (key == 'p' && j == 1)     pushelement(); 
+  if (key == 'o' && j == 1)     popelement(); 
+  if (key == 'i' && j == 2)     insertelement(); 
+  if (key == 'u' && j == 2)     deleteelement();
+   display();
+ }
+void mouse(int btn, int state, int x, int y)  
+{ 
+  if (btn == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)  
+  {
+     hl = 1;     display(); 
+  } 
+  if (btn == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)  
+  {
+     hl = 0;     display(); 
+  } 
+}
+ void stack()  { 
+  drawstack();
+  drawpointer();
+   drawBitmapTexth("STACK.", 250, 450, 0); 
+  if ( in == 0)  
+  {
+  int x, xy = 0;   
+  for (x = 0; x < 10; x++)       if (a[x] == -1)
+         xy++;  
+   if (xy == 10) 
+      drawBitmapText("stack is empty.", 250, 200, 0); in ++; 
+  } 
+  for (i = 0; i < 10; i++)  
+  {
+     if (a[i] == -1)
+       continue; 
+drawBitmapTextv(a[i], 125, 60 + (40 * (i)), 0); 
+  } 
+  if (push == 1)  
+  { 
+    drawBitmapText("element pushed.", 250, 250, 0);     push = 2; 
+  }
+ else if (push == 0)  
+  { 
+    drawBitmapText("Stack overflow (full).", 250, 250, 0);     push = 2;   
+}
+ else if (pop == 1)  
+  { 
+    drawBitmapText("element poped.", 250, 150, 0);     pop = 2;   
+}
+ else if (pop == 0)  
+  { 
+    drawBitmapText("Stack underflow (empty).", 250, 150, 0);     pop = 2;   
+}
+   if (hl == 1)  
+  { 
+    drawBitmapText("Highlight is ON.", 250, 300, 0); 
+  }
+ else if (hl == 0)  
+  { 
+    drawBitmapText("Highlight is OFF.", 250, 300, 0); 
+  } 
+} 
+void queue()  {
+ drawqueue(); 
+  drawBitmapTexth("QUEUE.", 225, 450, 0);   drawpointerf(); 
+  drawpointerr();
+   if (in1 == 0)
+ {
+     int f, ef = 0;
+     for (f = 0; f < 10; f++)
+       if (b[f] == -1)
+         ef++;  
+   if (ef == 10) 
+      drawBitmapText("queue is empty.", 250, 100, 0);     in1++;
+   }
+   for (i = 0; i < 10; i++) {     if (b[i] == -1)       continue;
+     drawBitmapTextv(b[i], 55 + (40 * (i)), 225, 0); 
+  }
+   if (insertq == 1) {
+    drawBitmapText("element inserted.", 250, 100, 0);     insertq = 2;
+  }
+ else if (insertq == 0) { 
+    drawBitmapText("Cannot insert, queue is full.", 250, 100, 0);     insertq = 2;
+   }
+ else if (deleteq == 1) { 
+    drawBitmapText("element deleted.", 250, 100, 0);
+     deleteq = 2;
+   }
+ else if (deleteq == 0)
+ {
+    drawBitmapText("Cannot delete, queue is empty.", 250, 100, 0);     deleteq = 2; 
+  }
+   if (hl == 1) {
+    drawBitmapText("Highlight is ON.", 250, 300, 0); 
+  }
+ else if (hl == 0) {
+    drawBitmapText("Highlight is OFF.", 250, 300, 0); 
+  }
+ }
+void main(int argc, char **argv) 
+{ 
+ 	int ch = 0;
+  	system("color 0a");
+  	gotoxy(30, 0);  
+	printf("Department of Computer Science and Engineering");  	gotoxy(33, 4);  
+	printf("CG Project Using OpenGL");  
+	gotoxy(40, 6); 
+	printf("stack and queue simulation");  	gotoxy(10, 10);
+  	printf("Presented By");  	gotoxy(10, 12);
+  	printf("DAIVIK NAYAK");  	gotoxy(10, 14);  	
+	printf("6th A");
+	gotoxy(10, 18);
+	printf("Dept. of CSE");  	gotoxy(10, 26); 
+ printf("Press 1 to Start ");
+  scanf_s("%d", &ch); 
+   switch (ch) 
+ 	{  	case 1: 
+ 	{ 
+ 	 	 	  printf("Enter your choice:\n 1.Stack\n 2.Queue\n"); 
+ 	 	 	  scanf_s("%d", &j);
+  	 	 	  glutInit(&argc, argv);  
+	 	 	  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  
+	 	   glutInitWindowSize(600, 600);  	 	 
+	  glutCreateWindow("stack and queue simulation");  	
+ 	 	  glutDisplayFunc(display); 
+ 	 	init(); 
+glutKeyboardFunc(keys);  	
+ 	 	  glutMouseFunc(mouse);  	 	 	 
+ 		glutMainLoop(); 
+ 	} 
+ 	} }
+  
